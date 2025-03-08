@@ -5,6 +5,7 @@ import UserRoutes from "./routes/users.js"
 import VideoRoutes from "./routes/videos.js"
 import CommentRoutes from "./routes/comment.js"
 import authRoutes from "./routes/auth.js"
+import cookieParser from "cookie-parser";
 env.config();
 
 const port = process.env.PORT || 3000;
@@ -25,7 +26,7 @@ app.get("/",(req,res)=>{
 })
 
 // App Routes
-
+app.use(cookieParser());
 app.use("/api/users",UserRoutes);
 app.use("/api/videos",VideoRoutes);
 app.use("/api/comments",CommentRoutes);
