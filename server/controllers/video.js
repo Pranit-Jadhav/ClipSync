@@ -92,14 +92,40 @@ export const sub = async (req,res)=>{
         const user = await User.findById(req.user.id);
         const SubscribedChannels = user.subscribedUsers;
 
-        const list = Promise.all(
+        const list = await Promise.all(
             SubscribedChannels.map((channelID)=>{
                 return Video.find({userId:channelID})
             })
         )
 
-        res.status(200).json(list);
+        res.status(200).json(list.flat().sort((a,b)=> b.createdAt - a.createdAt ));
 
+    } catch (error) {
+        next(error)
+    }
+    
+}
+
+export const getBytag = async (req,res)=>{
+    const tag = req.query.tags.split(",");
+    // console.log(tag);
+    
+    try {
+        const video = await Video.find({ tags:{$in:tag}}).limit(20);
+        // if(!video) return next(createError(404,"Video not Found"));
+        res.status(200).json(video);
+    } catch (err) {
+        next(err);
+    }
+    
+};
+export const getbysearch = async (req,res)=>{
+    const search = req.query.search;
+    // console.log(search)
+    try {
+        const video = await Video.find({title:{$regex: search , $options: "i"}}).limit(40);
+        // if(!video) return next(createError(404,"Video not Found"));
+        res.status(200).json(video);
     } catch (error) {
         next(error)
     }

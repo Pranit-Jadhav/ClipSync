@@ -1,5 +1,6 @@
 import { createError } from "../error.js"
 import User from "../models/User.js"
+import Video from "../models/Video.js";
 
 
 export const updateUser = async (req,res,next)=>{
@@ -47,7 +48,7 @@ export const getUser = async (req,res,next)=>{
 }
 export const subscribe = async (req,res,next)=>{
     try {
-        await User.findByIdAndUpdate(req.params.id,{
+        await User.findByIdAndUpdate(req.user.id,{
             $push:{subscribedUsers:req.params.id}
         })
         await User.findByIdAndUpdate(req.params.id,{
@@ -60,7 +61,7 @@ export const subscribe = async (req,res,next)=>{
 }
 export const unsubscribe = async (req,res,next)=>{
     try {
-        await User.findByIdAndUpdate(req.params.id,{
+        await User.findByIdAndUpdate(req.user.id,{
             $pull:{subscribedUsers:req.params.id}
         })
         await User.findByIdAndUpdate(req.params.id,{
@@ -74,15 +75,31 @@ export const unsubscribe = async (req,res,next)=>{
 
 export const likeUser = async (req,res,next)=>{
     try {
-        
+        const id = req.user.id;
+        const videoId = req.params.videoId;
+       await Video.findByIdAndUpdate(videoId,{
+            //add to set: likes the video only once even if hit many times
+        $addToSet:{likes:id},
+        $pull:{dislikes:id},
+       });
+       res.status(200).json("Video Liked")
+
     } catch (error) {
-        
+        next(error)
     }
 }
 export const dislikeUser = async (req,res,next)=>{
     try {
-        
+        const id = req.user.id;
+        const videoId = req.params.videoId;
+       await Video.findByIdAndUpdate(videoId,{
+            //add to set: likes the video only once even if hit many times
+        $addToSet:{dislikes:id},
+        $pull:{likes:id},
+       });
+       res.status(200).json("Video succefully disliked");
+
     } catch (error) {
-        
+        next(error)
     }
 }
