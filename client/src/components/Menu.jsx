@@ -41,7 +41,9 @@ const Logo = styled.div`
     margin-bottom:25px;
 `
 const Img = styled.img`
-    height:25px;
+    height:50px;
+    border-radius:1.2rem;
+    
 `
 const Item = styled.div`
   display: flex;
@@ -88,7 +90,7 @@ const Menu = ({ darkMode, setDarkMode }) => {
       <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
         <Logo>
             <Img src={clipsync} />
-            ClipSync
+            
         </Logo>
         </Link>
         <Item>
