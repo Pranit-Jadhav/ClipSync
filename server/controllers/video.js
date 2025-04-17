@@ -3,7 +3,7 @@ import Video from "../models/Video.js"
 import User from "../models/User.js"
 
 
-export const addVideo = async (req,res)=>{
+export const addVideo = async (req,res,next)=>{
     const newVideo = new Video({userId:req.user.id,...req.body});
     try {
         const savedVideo = await newVideo.save();
@@ -12,7 +12,7 @@ export const addVideo = async (req,res)=>{
         next(error)
     }
 }
-export const updateVideo = async (req,res)=>{
+export const updateVideo = async (req,res,next)=>{
     try {
         const video =await Video.findById(req.params.id)
         if(!video) return next(createError(404,"Video not found!"));
@@ -31,7 +31,7 @@ export const updateVideo = async (req,res)=>{
     }
     
 }
-export const deleteVideo = async (req,res)=>{
+export const deleteVideo = async (req,res,next)=>{
     try {
         const video =await Video.findById(req.params.id)
         if(!video) return next(createError(404,"Video not found!"));
@@ -47,7 +47,7 @@ export const deleteVideo = async (req,res)=>{
     }
     
 }
-export const getVideo = async (req,res)=>{
+export const getVideo = async (req,res,next)=>{
     try {
         const video = await Video.findById(req.params.id);
         if(!video) return next(createError(404,"Video not Found"));
@@ -57,7 +57,7 @@ export const getVideo = async (req,res)=>{
     }
     
 }
-export const addView = async (req,res)=>{
+export const addView = async (req,res,next)=>{
     try {
        await Video.findByIdAndUpdate(req.params.id,{
             $inc:{views:1}
@@ -68,7 +68,7 @@ export const addView = async (req,res)=>{
     }
     
 }
-export const randomVideo = async (req,res)=>{
+export const randomVideo = async (req,res,next)=>{
     try {
         const video = await Video.aggregate([{ $sample: { size:40 } }])
         res.status(200).json(video);
@@ -77,7 +77,7 @@ export const randomVideo = async (req,res)=>{
     }
     
 }
-export const trendingVideo = async (req,res)=>{
+export const trendingVideo = async (req,res,next)=>{
     try {
         const video = await Video.find().sort({views: -1})
         // if(!video) return next(createError(404,"Video not Found"));
@@ -87,7 +87,7 @@ export const trendingVideo = async (req,res)=>{
     }
     
 }
-export const sub = async (req,res)=>{
+export const sub = async (req,res,next)=>{
     try {
         const user = await User.findById(req.user.id);
         const SubscribedChannels = user.subscribedUsers;
@@ -106,20 +106,20 @@ export const sub = async (req,res)=>{
     
 }
 
-export const getBytag = async (req,res)=>{
+export const getBytag = async (req,res,next)=>{
     const tag = req.query.tags.split(",");
     // console.log(tag);
     
     try {
         const video = await Video.find({ tags:{$in:tag}}).limit(20);
-        // if(!video) return next(createError(404,"Video not Found"));
+        if(!video) return next(createError(404,"Video not Found"));
         res.status(200).json(video);
     } catch (err) {
         next(err);
     }
     
 };
-export const getbysearch = async (req,res)=>{
+export const getbysearch = async (req,res,next)=>{
     const search = req.query.search;
     // console.log(search)
     try {

@@ -17,7 +17,8 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
 
@@ -84,6 +85,14 @@ const Title = styled.h2`
 `;
 
 const Menu = ({ darkMode, setDarkMode }) => {
+  const {currentUser} = useSelector(state => state.user)
+  const navigate = useNavigate();
+
+
+
+
+
+
   return (
     <Container>
       <Wrapper>
@@ -93,18 +102,25 @@ const Menu = ({ darkMode, setDarkMode }) => {
             
         </Logo>
         </Link>
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
         <Item>
           <HomeIcon />
           Home
         </Item>
+        </Link>
+
+        <Link to="trends" style={{textDecoration:"none", color:'inherit' }} > 
         <Item>
           <ExploreOutlinedIcon />
           Explore
         </Item>
+        </Link>
+        <Link to="subscriptions" style={{textDecoration:"none",  color:'inherit'}}> 
         <Item>
           <SubscriptionsOutlinedIcon />
           Subscriptions
         </Item>
+        </Link>
         <Hr />
         <Item>
           <VideoLibraryOutlinedIcon />
@@ -115,38 +131,52 @@ const Menu = ({ darkMode, setDarkMode }) => {
           History
         </Item>
         <Hr />
-        <Login>
-          Sign in to like videos, comment, and subscribe.
-          <Link to="/signin" style={{textDecoration:"none"}}> 
-            <Button>
-              <AccountCircleOutlinedIcon />
-              SIGN IN
-            </Button>
-          </Link>
-        </Login>
+
+
+    {!currentUser &&
+      <>
+      <Login>
+      Sign in to like videos, comment, and subscribe.
+      <Link to="/signin" style={{textDecoration:"none"}}> 
+        <Button>
+          <AccountCircleOutlinedIcon />
+          SIGN IN
+        </Button>
+      </Link>
+    </Login>
+      </>
+    }
 
         <Hr />
         <Title>BEST OF CLIPSYNC</Title>
-        <Item>
+
+        {/* <Link to=''> */}
+
+
+        <Item  onClick={()=>navigate(`/tags?tags=music`)}>
           <LibraryMusicOutlinedIcon />
           Music
         </Item>
-        <Item>
+       
+
+
+        <Item  onClick={()=>navigate(`/tags?tags=sports`)}>
           <SportsBasketballOutlinedIcon />
           Sports
         </Item>
-        <Item>
+        <Item onClick={()=>navigate(`/tags?tags=gaming`)}>
           <SportsEsportsOutlinedIcon />
           Gaming
         </Item>
-        <Item>
+        <Item onClick={()=>navigate(`/tags?tags=movies`)}>
           <MovieOutlinedIcon />
           Movies
         </Item>
-        <Item>
+        <Item onClick={()=>navigate(`/tags?tags=news`)}>
           <ArticleOutlinedIcon />
           News
         </Item>
+        
         <Item>
           <LiveTvOutlinedIcon />
           Live

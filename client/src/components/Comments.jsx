@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Comment from "./Comment";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { Button } from "@mui/material";
 
 const Container = styled.div``;
 
@@ -26,21 +29,66 @@ const Input = styled.input`
   width: 100%;
 `;
 
-const Comments = () => {
+const Comments = ({videoId}) => {
+  const { currentUser } = useSelector((state) => state.user);
+
+  const [comments, setComments] = useState([]);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await axios.get(`/api/comments/${videoId}`);
+        setComments(res.data);
+      } catch (err) {
+        console.log(err)
+      }
+    };
+    fetchComments();
+  }, [videoId]);
+
+  const [newCom,setnewCom] = useState("");
+
+
+
+  // const handlenewComment = async ()=>{
+
+
+  // }
+
+  const handlesubmit = async (e)=>{
+      //  e.preventDefault();
+       try {
+        // console.log(newCom);
+        const res = await axios.post("/api/comments",{
+          desc:newCom,videoId:videoId,
+        });
+        console.log(res.data);
+        // navigate('/', { replace: true });
+        
+       } catch (error) {
+        console.log(error);
+        
+       }
+
+  }
+
+  
+
+
   return (
     <Container>
-      <NewComment>
-        <Avatar src="https://yt3.ggpht.com/yti/APfAmoE-Q0ZLJ4vk3vqmV4Kwp0sbrjxLyB8Q4ZgNsiRH=s88-c-k-c0x00ffffff-no-rj-mo" />
-        <Input placeholder="Add a comment..." />
-        wer
+      <NewComment >
+        <Avatar src={currentUser.img} />
+        <form onSubmit={handlesubmit}>
+          <Input placeholder="Add a comment..." onChange={(e)=>setnewCom(e.target.value)}/>
+          <Button type="submit" >Comment</Button>
+        </form>
+      
+        
       </NewComment>
-      <Comment/>
-      <Comment/>
-      <Comment/>
-      <Comment/>
-      <Comment/>
-      <Comment/>
-      <Comment/>
+      {comments.map(comment=>(
+        <Comment key={comment._id} comment={comment}/>
+      ))}
     </Container>
   );
 };
