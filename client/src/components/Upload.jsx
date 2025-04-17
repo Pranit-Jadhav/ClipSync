@@ -92,7 +92,7 @@ const Upload = ({ setOpen }) => {
     data.append("file", file);
     data.append("upload_preset", type === "image" ? "images_preset" : "videos_preset");
 
-    const cloudName = "dwotpkkwx";    // Your Cloudinary cloud name
+    const cloudName = import.meta.env.VITE_CLOUD_NAME;    // Your Cloudinary cloud name
     const resourceType = type === "image" ? "image" : "video";
     const url = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
 
