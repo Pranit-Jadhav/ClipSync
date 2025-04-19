@@ -172,11 +172,23 @@ const Video = () => {
 
 
 
+  const [videos,setVideos] = useState([])
+
+  useEffect(()=>{
+    const fetchVideos = async ()=>{
+      const res = await axios.get("/api/videos/random");
+      console.log(res.data);
+      setVideos(res.data);
+    }
+    fetchVideos();
+  },[])
 
 
 
 
-  if (!currentVideo || !channel) {
+
+
+  if (!currentVideo || !channel || !videos) {
     return <div>Loading...</div>;
   }
   
@@ -249,21 +261,13 @@ const Video = () => {
         <Hr />
         <Comments videoId={currentVideo._id} />
       </Content>
-      {/* <Recommendation>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-      </Recommendation> */}
+      <Recommendation>
+        {/* <Card type="sm" videos={videos}/> */}
+        {videos.map(video=>(
+          <Card type="sm" key={video._id} video={video}/>
+      ))}
+       
+      </Recommendation>
     </Container>
   );
 };
